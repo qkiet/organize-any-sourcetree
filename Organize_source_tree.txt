@@ -1,0 +1,91 @@
+Principles to organize source tree?
+
+
+- Architecture of your software will determine how your source code is organize (linux kernel is a great example). A README explain source tree structure is A MUST. A BUILD/INSTALL to instruct how to build is very helpful
+- Group according to core functionalities is a great thing, too. Like /thirdparty/, /tools/, /ui/
+- My own idea:
+	=> We will use Visual Studio source tree organization because they have very good foundation of source tree organization
+	=> Some core terms:
+		-> Solution: the purpose of entire source tree. What this source tree for? 
+		-> CEU: combination of executable + library that live in *same addressing space*
+			* What *same address space* mean? Every program & its data & its allocated dynamtic memory will have its own address space. This address space means virtual memory (if application live in MMU-bases environment) or physical memory (if application does not live in MMU-based environment)
+	=> Before organizing source tree, must have an architecture specs of software first
+	=> Then identify complete executable unit (CEU)
+	=> If project have only one CEU, organize like this:
+		-> A /src/ directory that contain source code. /src/ organize follow this order:
+			* Layer: where modules locate?
+			* 1st level modules: higest level module
+			...
+		-> How libraries are included?
+			* What is called "library" in source tree? It's either a source or binary library that two or more modules reuse.
+			* Classify according to how library is used in layered sense, there are 2 kinds:
+				. Single-level library: these libraries are reused in only one layer. This kind of library will be placed at same layer folder.
+				. Multi-level library: these libraries are reused in many layer. This kind of library will be placed at directory /common/lib at root of source tree
+		-> A /build/ directory to contain build system to build entire solution
+		-> A /common/tools/ directory to contain some useful tools for solution
+		-> A /test/ directory at root to contain testing tools
+		-> Example of single CEU:
+	
+			/ (root)
+			|
+			|--<lowest layer>/
+			|		|
+			|		|__<module 1>/
+			|		|
+			|		|__<module 2>/
+			|		|
+			|		|__lib/
+			|
+			|--<middle layer>/
+			...
+			|
+			|__<highest layer>/
+			|
+			...
+			|__common/
+			|		|
+			|		|__lib/
+			|		|
+			|		|__tools/
+			|
+			|__build/
+			|
+			|
+			|__test/
+			|
+			|
+			...
+			|
+			|__README.txt
+			|
+			|
+			|__ LICENSE.txt
+	
+	=> If solution contains multiple CEUs (like QTI firmware or Intel IFWI) then root must contain folder for those CEU, then each CEU is organized as the single CEU structure
+		-> In case of there are libraries, tools or build systems that shared accross CEU then just place them as /common/lib/, /common/tools/, /build/
+		-> Example of multiple CEUs solution:
+			
+			/
+			|
+			|__<CEU 1>/
+			|
+			|__<CEU 2>/
+			|
+			|__build/
+			|
+			|__common/
+			|	|
+			|	|__lib/
+			|	|
+			|	|__tools/
+			|	
+			|__README.txt
+			
+	
+Refernce: 
+	https://softwareengineering.stackexchange.com/questions/81899/how-should-i-organize-my-source-tree
+	https://www.sitepoint.com/organize-project-files/
+
+FAQ:
+1. What if there is a tool that ís both used for build system and an independent tool?
+	- If that tool is completely independent of build system (does not reference build system's libraries) then place in /common/tools/. If not then place in build/
