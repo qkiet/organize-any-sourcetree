@@ -29,12 +29,12 @@ Principles to organize source tree?
 			/ (root)
 			|
 			|--<lowest layer>/
-			|		|
-			|		|__<module 1>/
-			|		|
-			|		|__<module 2>/
-			|		|
-			|		|__lib/
+			|	|
+			|	|__<module 1>/
+			|	|
+			|	|__<module 2>/
+			|	|
+			|	|__lib/
 			|
 			|--<middle layer>/
 			...
@@ -43,10 +43,10 @@ Principles to organize source tree?
 			|
 			...
 			|__common/
-			|		|
-			|		|__lib/
-			|		|
-			|		|__tools/
+			|	|
+			|	|__lib/
+			|	|
+			|	|__tools/
 			|
 			|__build/
 			|
